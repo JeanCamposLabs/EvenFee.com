@@ -31,6 +31,24 @@ img, svg, video, canvas {
 button, input, textarea, select { font: inherit; color: inherit; }
 a { color: inherit; }
 
+/* ----- Brand display font: Bitcount Grid Double (self-hosted, variable) ----- */
+@font-face {
+  font-family: "Bitcount Grid Double";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("fonts/bitcount-grid-double-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Bitcount Grid Double";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("fonts/bitcount-grid-double-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 /* ----- Design tokens ------------------------------------------------------- */
 :root {
   /* Brand palette — trustworthy fintech: deep indigo/navy + recovery-green accent */
@@ -60,6 +78,7 @@ a { color: inherit; }
   /* Typography */
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
                "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-display: "Bitcount Grid Double", var(--font-sans);  /* brand title font */
 
   /* Spacing & shape */
   --container: 1120px;
@@ -93,7 +112,7 @@ h1, h2, h3, h4 {
   text-wrap: balance;
 }
 
-h1 { font-size: clamp(2.1rem, 1.4rem + 3.0vw, 3.5rem); }
+h1 { font-size: clamp(2.1rem, 1.4rem + 3.0vw, 3.5rem); font-family: var(--font-display); letter-spacing: normal; }
 h2 { font-size: clamp(1.6rem, 1.1rem + 2.1vw, 2.4rem); }
 h3 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; }
 
@@ -239,6 +258,7 @@ strong { color: var(--ink); font-weight: 700; }
 }
 .brand:hover { text-decoration: none; }
 .brand__mark { width: 30px; height: 30px; border-radius: 9px; flex: none; box-shadow: var(--shadow-sm); }
+.brand__name { font-family: var(--font-display); letter-spacing: normal; }
 .brand__name b { color: var(--brand-700); }
 
 .nav__links {

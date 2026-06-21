@@ -48,6 +48,17 @@
   var year = document.querySelector("[data-year]");
   if (year) year.textContent = String(new Date().getFullYear());
 
+  /* Respect reduced-motion: pause the autoplaying hero mascot, leaving its poster */
+  var heroVid = document.querySelector("video.hero__mascot");
+  if (heroVid && window.matchMedia) {
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    var applyMotionPref = function () {
+      if (reduceMotion.matches) { heroVid.removeAttribute("autoplay"); heroVid.pause(); }
+    };
+    applyMotionPref();
+    if (reduceMotion.addEventListener) reduceMotion.addEventListener("change", applyMotionPref);
+  }
+
   /* Contact form — AJAX submit with an inline success state.
      Falls back to a normal POST (with redirect to thanks.html) when JS is off. */
   var form = document.getElementById("contact-form");
