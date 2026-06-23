@@ -64,7 +64,7 @@
      the whole animation. Reduced-motion / blocked autoplay hold the final frame. */
   var heroVid = document.querySelector("video.hero__mascot");
   if (heroVid) {
-    var LOOP_TAIL = 1.0; // seconds at the end to loop
+    var LOOP_START = 13.0; // loop from here to the end (~3s idle) so she blinks on a calm cycle
     var freezeEnd = function () {
       var end = (isFinite(heroVid.duration) && heroVid.duration > 0) ? heroVid.duration - 0.05 : 0;
       try { heroVid.currentTime = end; } catch (e) {}
@@ -75,8 +75,7 @@
       else heroVid.addEventListener("loadedmetadata", freezeEnd);
     };
     var loopTail = function () {
-      var d = heroVid.duration;
-      if (isFinite(d) && d > LOOP_TAIL) { try { heroVid.currentTime = d - LOOP_TAIL; } catch (e) {} }
+      if (isFinite(heroVid.duration) && heroVid.duration > LOOP_START) { try { heroVid.currentTime = LOOP_START; } catch (e) {} }
       var p = heroVid.play && heroVid.play();
       if (p && p.catch) p.catch(function () {});
     };
