@@ -65,6 +65,19 @@
   var heroVid = document.querySelector("video.hero__mascot");
   if (heroVid) {
     var LOOP_START = 13.0; // loop from here to the end (~3s idle) so she blinks on a calm cycle
+
+    // Reading guide: just after the brand reveal lands, sweep a single blue
+    // pulse through the accent letters (e → a → o → g) to lead the eye across
+    // the headline, then they settle back to ink. Runs once.
+    var heroH1 = document.querySelector(".hero h1");
+    var GUIDE_AT = 12.6; // seconds — the logo has dropped in and the scene is calm
+    var guided = false;
+    var startGuide = function () {
+      if (guided || !heroH1) return;
+      guided = true;
+      heroH1.classList.add("is-guiding");
+    };
+
     var freezeEnd = function () {
       var end = (isFinite(heroVid.duration) && heroVid.duration > 0) ? heroVid.duration - 0.05 : 0;
       try { heroVid.currentTime = end; } catch (e) {}
@@ -92,6 +105,15 @@
       holdIfBlocked();
     } else {
       heroVid.addEventListener("ended", loopTail);
+      var onGuideTime = function () {
+        if (heroVid.currentTime >= GUIDE_AT) {
+          startGuide();
+          heroVid.removeEventListener("timeupdate", onGuideTime);
+        }
+      };
+      heroVid.addEventListener("timeupdate", onGuideTime);
+      // Fallback in case autoplay is blocked and timeupdate never fires.
+      setTimeout(startGuide, 14000);
       var played = heroVid.play && heroVid.play();
       if (played && played.catch) played.catch(holdIfBlocked);
     }
