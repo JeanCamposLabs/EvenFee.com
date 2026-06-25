@@ -67,8 +67,8 @@
     var LOOP_START = 13.0; // loop from here to the end (~3s idle) so she blinks on a calm cycle
 
     // Reading guide: just after the brand reveal lands, light up each character
-    // of the headline in sequence (left to right) like the reader's eye moving
-    // across the line, then they settle back to ink. Runs once.
+    // of the headline in sequence (left to right), each holding blue for ~10s
+    // before slowly fading back to ink. Runs once.
     var heroH1 = document.querySelector(".hero h1");
     var GUIDE_AT = 12.6; // seconds — the logo has dropped in and the scene is calm
     var guided = false;
