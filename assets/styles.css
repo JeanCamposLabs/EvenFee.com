@@ -449,40 +449,16 @@ strong { color: var(--ink); font-weight: 700; }
   .hero__sub { font-size: 1.16rem; }
 }
 
-/* Hero mascot illustration */
-.hero__art { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+/* Hero right column — now holds the recovery tool itself (no stacked video). */
+.hero__art { display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-/* Reveal choreography: with JS on (html.hero-reveal), the brand intro plays
-   first while the tool is tucked away below; once the intro lands, the tool
-   rises in from below and pushes the video up — the video stays on top. */
-.hero__tool {
-  transition: opacity .8s ease, transform .8s cubic-bezier(.16, .84, .3, 1), max-height .85s ease;
-}
-.hero-reveal .hero__tool {
-  opacity: 0; transform: translateY(30px) scale(.98);
-  max-height: 0; overflow: hidden; pointer-events: none;
-}
-.hero-reveal .hero.is-tool-revealed .hero__tool {
-  opacity: 1; transform: none; max-height: 900px; pointer-events: auto;
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero__tool { transition: none; }
-}
-
-/* On load: the copy arrives from the left, the video from the right. */
+/* On load: the copy arrives from the left, the tool from the right. */
 @keyframes heroInLeft  { from { opacity: 0; transform: translateX(-100%); } to { opacity: 1; transform: none; } }
 @keyframes heroInRight { from { opacity: 0; transform: translateX(100%);  } to { opacity: 1; transform: none; } }
 .hero-reveal .hero__copy { animation: heroInLeft 3.4s cubic-bezier(.16, .84, .3, 1) both; }
 .hero-reveal .hero__art  { animation: heroInRight 3.4s cubic-bezier(.16, .84, .3, 1) both .2s; }
 @media (prefers-reduced-motion: reduce) {
   .hero-reveal .hero__copy, .hero-reveal .hero__art { animation: none; }
-}
-.hero__mascot {
-  width: 100%;
-  max-width: 520px;
-  height: auto;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
 }
 
 /* Hero mock "audit" card */
@@ -826,35 +802,31 @@ strong { color: var(--ink); font-weight: 700; }
 .estimator__result .btn { margin-top: 18px; }
 .estimator__disclaimer { color: #aebfe0; font-size: .8rem; margin-top: 6px; }
 
-/* ----- Hero mascot overlays (logo reveal + replay control) ----------------- */
-.hero__stage { position: relative; z-index: 0; width: 100%; max-width: 360px; line-height: 0; }
-.hero__stage .hero__mascot { max-width: 100%; }
-/* Soft teal aura that echoes the mascot scene's background, so the rounded
-   video melts into the page instead of sitting on it as a hard rectangle. */
-.hero__stage::before {
+/* ----- Brand mascot clip (in "How it works") ------------------------------- */
+.mascot-clip {
+  position: relative;
+  width: 100%;
+  max-width: 470px;
+  margin: clamp(22px, 3vw, 36px) auto clamp(28px, 4vw, 46px);
+  line-height: 0;
+}
+/* Soft teal aura echoing the scene background, so the rounded clip melts in. */
+.mascot-clip::before {
   content: "";
   position: absolute;
-  inset: -9% -11% -13%;
-  z-index: -1;
-  background: radial-gradient(58% 58% at 50% 46%, rgba(159, 206, 211, .55), rgba(159, 206, 211, 0) 72%);
+  inset: -8% -10% -12%;
+  z-index: 0;
+  background: radial-gradient(58% 58% at 50% 46%, rgba(159, 206, 211, .5), rgba(159, 206, 211, 0) 72%);
   filter: blur(6px);
 }
-
-/* Replay control: fully hidden until the video is hovered/focused, then it fades in; brightens on its own hover. */
-.hero__replay {
-  position: absolute; top: 16px; left: 16px;
-  width: 42px; height: 42px; border-radius: 50%;
-  display: inline-flex; align-items: center; justify-content: center; line-height: 0;
-  background: rgba(255, 255, 255, .7); color: var(--brand-700);
-  border: 1px solid var(--line); box-shadow: var(--shadow-sm); cursor: pointer;
-  opacity: 0;
-  transition: opacity .25s ease, transform .2s ease, background .2s ease, color .2s ease;
-  pointer-events: none; -webkit-tap-highlight-color: transparent;
+.mascot-clip__video {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
 }
-.hero__replay svg { width: 20px; height: 20px; }
-.hero__art:hover .hero__replay,
-.hero__art:focus-within .hero__replay { opacity: .85; pointer-events: auto; }
-.hero__replay:hover, .hero__replay:focus-visible { background: #fff; color: var(--brand-600); transform: scale(1.07); }
 
 /* ----- Hero scroll cue ----------------------------------------------------- */
 .hero__scroll {
@@ -883,6 +855,11 @@ strong { color: var(--ink); font-weight: 700; }
   box-shadow: var(--shadow-lg);
   padding: clamp(16px, 2vw, 22px);
   text-align: left;
+}
+.hero__tool-head { display: flex; align-items: center; gap: 11px; }
+.hero__tool-avatar {
+  width: 46px; height: 46px; flex: none; border-radius: 50%;
+  border: 2px solid #fff; box-shadow: var(--shadow-sm); background: var(--teal-100);
 }
 .hero__tool-badge {
   display: inline-flex; align-items: center; gap: .45em;

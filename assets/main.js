@@ -59,59 +59,33 @@
   var year = document.querySelector("[data-year]");
   if (year) year.textContent = String(new Date().getFullYear());
 
-  /* Hero: the brand intro plays once, then the recovery tool rises in from below
-     and pushes the video up — the video stays on top, gently looping its last
-     idle beat so the scene stays alive. The same moment starts the headline
-     reading guide. Reduced-motion / blocked autoplay reveal the tool right away. */
-  var heroVid = document.querySelector("video.hero__mascot");
-  if (heroVid) {
-    var hero = heroVid.closest(".hero");
-    var heroH1 = document.querySelector(".hero h1");
-    var HANDOFF_AT = 12.6; // seconds — the EvenFee logo has finished dropping in
-    var LOOP_START = 13.0; // after the intro, loop the last idle beat (she blinks)
+  /* Headline reading guide: a little after load (once the entrance settles),
+     sweep a blue highlight through the headline characters, left to right, to
+     lead the eye across the line. CSS honours prefers-reduced-motion. */
+  var heroH1 = document.querySelector(".hero h1");
+  if (heroH1) setTimeout(function () { heroH1.classList.add("is-guiding"); }, 2800);
 
-    var revealed = false;
-    var revealHero = function () {
-      if (revealed) return;
-      revealed = true;
-      if (heroH1) heroH1.classList.add("is-guiding");    // light up the headline, left to right
-      if (hero) hero.classList.add("is-tool-revealed");  // tool rises in and pushes the video up
-    };
-    var loopTail = function () {
-      if (isFinite(heroVid.duration) && heroVid.duration > LOOP_START) { try { heroVid.currentTime = LOOP_START; } catch (e) {} }
-      var p = heroVid.play && heroVid.play();
-      if (p && p.catch) p.catch(function () {});
-    };
-    var replay = function () {
-      try { heroVid.currentTime = 0; } catch (e) {}
-      var p = heroVid.play && heroVid.play();
-      if (p && p.catch) p.catch(function () {});
-    };
-
-    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
-      heroVid.removeAttribute("autoplay");
-      revealHero(); // show the tool immediately; the video holds its poster frame
-    } else {
-      heroVid.addEventListener("ended", loopTail); // keep the scene alive at the top
-      var onHandoff = function () {
-        if (heroVid.currentTime >= HANDOFF_AT) {
-          revealHero();
-          heroVid.removeEventListener("timeupdate", onHandoff);
-        }
-      };
-      heroVid.addEventListener("timeupdate", onHandoff);
-      setTimeout(revealHero, 15000); // backstop if timeupdate never reaches the cue
-      var played = heroVid.play && heroVid.play();
-      if (played && played.catch) played.catch(function () {
-        setTimeout(revealHero, 1800); // autoplay blocked — reveal the tool after a short beat
+  /* Brand mascot clip (now in "How it works"): play it once it scrolls into view
+     (muted), then gently loop its idle tail so the scene stays alive. Reduced
+     motion / no IntersectionObserver simply holds the poster frame. */
+  var clip = document.querySelector("video.mascot-clip__video");
+  if (clip) {
+    var CLIP_LOOP = 13.0; // loop the last idle beat (she blinks)
+    var playClip = function () { var p = clip.play && clip.play(); if (p && p.catch) p.catch(function () {}); };
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduceMotion) {
+      clip.addEventListener("ended", function () {
+        if (isFinite(clip.duration) && clip.duration > CLIP_LOOP) { try { clip.currentTime = CLIP_LOOP; } catch (e) {} }
+        playClip();
       });
-    }
-
-    var replayBtn = document.querySelector(".hero__replay");
-    if (replayBtn) {
-      replayBtn.addEventListener("click", replay);
-      replayBtn.addEventListener("mouseenter", replay);
+      if ("IntersectionObserver" in window) {
+        var io = new IntersectionObserver(function (entries) {
+          if (entries.some(function (e) { return e.isIntersecting; })) { playClip(); io.disconnect(); }
+        }, { threshold: 0.35 });
+        io.observe(clip);
+      } else {
+        playClip();
+      }
     }
   }
 
